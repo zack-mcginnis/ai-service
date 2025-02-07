@@ -6,3 +6,4 @@ Python service which will interact with an ai model and return requested data ba
 # postgresdb
 
 # host model or use 3rd party apis
+
