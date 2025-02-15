@@ -4,7 +4,8 @@ from typing import List
 
 from database import engine, get_db
 from models import Base, Example
-from schemas import ExampleCreate, Example as ExampleSchema
+from schemas import ExampleCreate, Example as ExampleSchema, AIRequest, AIResponse
+from services.ai_service import query_ai_api
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -30,4 +31,21 @@ def read_example(example_id: int, db: Session = Depends(get_db)):
     example = db.query(Example).filter(Example.id == example_id).first()
     if example is None:
         raise HTTPException(status_code=404, detail="Example not found")
-    return example 
+    return example
+
+@app.get("/ai/generate", response_model=AIResponse)
+async def generate_ai_response(request: AIRequest):
+    """
+    Generate AI response using specified model and API
+    """
+    try:
+        output = await query_ai_api(
+            input_text=request.input,
+            model_name=request.config.ai_model,
+            api_url=request.config.api
+        )
+        return AIResponse(output=output)
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e)) 

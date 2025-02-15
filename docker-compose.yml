@@ -12,7 +12,12 @@ services:
         condition: service_healthy
     volumes:
       - .:/app
-    
+      # Create a volume for pip cache to speed up reinstalls
+      - pip_cache:/root/.cache/pip
+    # Override the CMD to watch for requirement changes
+    command: >
+      sh -c "pip install -r requirements.txt && python run.py"
+
   db:
     image: postgres:15
     environment:
@@ -30,4 +35,5 @@ services:
       retries: 5
 
 volumes:
-  postgres_data: 
+  postgres_data:
+  pip_cache: 

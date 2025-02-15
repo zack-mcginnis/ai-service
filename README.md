@@ -60,6 +60,28 @@ Once running, access the API documentation at:
 - `GET /examples/` - List all examples
 - `GET /examples/{example_id}` - Get specific example
 
+### AI API
+- `GET /ai/generate` - Generate AI response
+  ```json
+  // Request
+  {
+    "input": "Your prompt text here",
+    "config": {
+      "ai_model": "gpt-3.5-turbo",
+      "api": "https://api.openai.com/v1/chat/completions"
+    }
+  }
+  
+  // Response
+  {
+    "output": "AI generated response text"
+  }
+  ```
+
+## Environment Variables
+
+- `AI_API_KEY` - API key for the AI service (optional)
+
 ## Development Commands
 
 ```bash
