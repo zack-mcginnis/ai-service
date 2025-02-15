@@ -67,8 +67,8 @@ Once running, access the API documentation at:
   {
     "input": "Your prompt text here",
     "config": {
-      "ai_model": "gpt-3.5-turbo",
-      "api": "https://api.openai.com/v1/chat/completions"
+      "provider": "openai",  // or "anthropic" or "gemini"
+      "ai_model": "gpt-3.5-turbo"  // model name for the selected provider
     }
   }
   
@@ -80,7 +80,25 @@ Once running, access the API documentation at:
 
 ## Environment Variables
 
+- `OPENAI_API_KEY` - OpenAI API key
+- `ANTHROPIC_API_KEY` - Anthropic API key
+- `GOOGLE_API_KEY` - Google AI API key
 - `AI_API_KEY` - API key for the AI service (optional)
+
+## Supported Models
+
+### OpenAI
+- gpt-4
+- gpt-3.5-turbo
+
+### Anthropic
+- claude-3-opus-20240229
+- claude-3-sonnet-20240229
+- claude-2.1
+
+### Google
+- gemini-pro
+- gemini-pro-vision
 
 ## Development Commands
 

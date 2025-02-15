@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, Dict
+from enum import Enum
 
 class ExampleBase(BaseModel):
     name: str
@@ -15,9 +16,14 @@ class Example(ExampleBase):
     class Config:
         from_attributes = True
 
+class Provider(str, Enum):
+    OPENAI = "openai"
+    ANTHROPIC = "anthropic"
+    GEMINI = "gemini"
+
 class AIConfig(BaseModel):
+    provider: Provider
     ai_model: str
-    api: str
 
 class AIRequest(BaseModel):
     input: str

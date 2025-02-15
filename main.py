@@ -4,8 +4,10 @@ from typing import List
 
 from database import engine, get_db
 from models import Base, Example
-from schemas import ExampleCreate, Example as ExampleSchema, AIRequest, AIResponse
-from services.ai_service import query_ai_api
+from schemas import ExampleCreate, Example as ExampleSchema, AIRequest, AIResponse, Provider
+from services.openai_service import query_openai
+from services.anthropic_service import query_anthropic
+from services.gemini_service import query_gemini
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -36,15 +38,29 @@ def read_example(example_id: int, db: Session = Depends(get_db)):
 @app.get("/ai/generate", response_model=AIResponse)
 async def generate_ai_response(request: AIRequest):
     """
-    Generate AI response using specified model and API
+    Generate AI response using specified provider and model
     """
     try:
-        output = await query_ai_api(
-            input_text=request.input,
-            model_name=request.config.ai_model,
-            api_url=request.config.api
-        )
+        if request.config.provider == Provider.OPENAI:
+            output = await query_openai(
+                input_text=request.input,
+                model_name=request.config.ai_model
+            )
+        elif request.config.provider == Provider.ANTHROPIC:
+            output = await query_anthropic(
+                input_text=request.input,
+                model_name=request.config.ai_model
+            )
+        elif request.config.provider == Provider.GEMINI:
+            output = await query_gemini(
+                input_text=request.input,
+                model_name=request.config.ai_model
+            )
+        else:
+            raise HTTPException(status_code=400, detail="Unsupported provider")
+            
         return AIResponse(output=output)
+        
     except HTTPException as e:
         raise e
     except Exception as e:
