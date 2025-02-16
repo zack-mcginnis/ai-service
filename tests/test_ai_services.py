@@ -1,8 +1,9 @@
 import pytest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, patch, MagicMock
 from services.openai_service import query_openai
 from services.anthropic_service import query_anthropic
 from services.gemini_service import query_gemini
+from services.ollama_service import query_ollama
 
 pytestmark = pytest.mark.asyncio
 
@@ -55,4 +56,23 @@ async def test_gemini_service(mock_genai):
     )
     
     assert response == "Mocked Gemini response"
-    mock_genai.GenerativeModel.assert_called_once_with("gemini-pro") 
+    mock_genai.GenerativeModel.assert_called_once_with("gemini-pro")
+
+@patch('services.ollama_service.httpx.AsyncClient')
+async def test_ollama_service(mock_client):
+    # Setup mock
+    mock_client_instance = AsyncMock()
+    mock_client.return_value.__aenter__.return_value = mock_client_instance
+    
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {"response": "Mocked Ollama response"}
+    mock_client_instance.post.return_value = mock_response
+
+    response = await query_ollama(
+        input_text="Say 'Hello, Test!'",
+        model_name="deepseek-coder:6.7b"
+    )
+    
+    assert response == "Mocked Ollama response"
+    mock_client_instance.post.assert_called_once() 

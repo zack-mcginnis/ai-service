@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch, AsyncMock, MagicMock
 from main import app
 import os
 
@@ -17,7 +17,7 @@ def test_ai_generate_openai(mock_openai):
     mock_client.chat.completions.create.return_value = mock_response
     
     response = client.get(
-        "/ai/generate",
+        "/generate",
         params={
             "input": "Say 'Hello, Test!'",
             "provider": "openai",
@@ -38,7 +38,7 @@ def test_ai_generate_anthropic(mock_anthropic):
     mock_client.messages.create.return_value = mock_response
     
     response = client.get(
-        "/ai/generate",
+        "/generate",
         params={
             "input": "Say 'Hello, Test!'",
             "provider": "anthropic",
@@ -59,7 +59,7 @@ def test_ai_generate_gemini(mock_genai):
     mock_genai.GenerativeModel.return_value = mock_model
     
     response = client.get(
-        "/ai/generate",
+        "/generate",
         params={
             "input": "Say 'Hello, Test!'",
             "provider": "gemini",
@@ -69,9 +69,31 @@ def test_ai_generate_gemini(mock_genai):
     assert response.status_code == 200
     assert response.json()["output"] == "Mocked Gemini response"
 
+@patch('services.ollama_service.httpx.AsyncClient')
+def test_ai_generate_deepseek(mock_client):
+    # Setup mock
+    mock_client_instance = AsyncMock()
+    mock_client.return_value.__aenter__.return_value = mock_client_instance
+    
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {"response": "Mocked Deepseek response"}
+    mock_client_instance.post.return_value = mock_response
+    
+    response = client.get(
+        "/generate",
+        params={
+            "input": "Say 'Hello, Test!'",
+            "provider": "deepseek",
+            "ai_model": "deepseek-coder:6.7b"
+        }
+    )
+    assert response.status_code == 200
+    assert response.json()["output"] == "Mocked Deepseek response"
+
 def test_ai_generate_invalid_provider():
     response = client.get(
-        "/ai/generate",
+        "/generate",
         params={
             "input": "test",
             "provider": "invalid",

@@ -10,16 +10,30 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - OLLAMA_API_URL=http://ollama:11434
       - PYTHONPATH=/app
     depends_on:
       - db
+      - ollama
     volumes:
       - .:/app
       # Create a volume for pip cache to speed up reinstalls
       - pip_cache:/root/.cache/pip
     # Override the CMD to watch for requirement changes
     command: >
-      sh -c "pip install -r requirements.txt && python run.py"
+      sh -c "chmod +x scripts/init_ollama.sh &&
+             ./scripts/init_ollama.sh &&
+             pip install -r requirements.txt &&
+             python run.py"
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    entrypoint: ["/bin/ollama"]
+    command: serve
 
   db:
     image: postgres:15
@@ -39,4 +53,5 @@ services:
 
 volumes:
   postgres_data:
-  pip_cache: 
+  pip_cache:
+  ollama_data: 

@@ -8,6 +8,7 @@ from schemas import ExampleCreate, Example as ExampleSchema, AIRequest, AIRespon
 from services.openai_service import query_openai
 from services.anthropic_service import query_anthropic
 from services.gemini_service import query_gemini
+from services.ollama_service import query_ollama
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -35,13 +36,13 @@ def read_example(example_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Example not found")
     return example
 
-@app.get("/ai/generate")
+@app.get("/generate")
 async def generate(
     input: str,
     provider: str,
     ai_model: str
 ):
-    supported_providers = ["openai", "anthropic", "gemini"]
+    supported_providers = ["openai", "anthropic", "gemini", "deepseek"]
     if provider not in supported_providers:
         raise HTTPException(
             status_code=400, 
@@ -55,5 +56,7 @@ async def generate(
             return {"output": await query_anthropic(input, ai_model)}
         elif provider == "gemini":
             return {"output": await query_gemini(input, ai_model)}
+        elif provider == "deepseek":
+            return {"output": await query_ollama(input, ai_model)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) 

@@ -84,6 +84,7 @@ Once running, access the API documentation at:
 - `ANTHROPIC_API_KEY` - Anthropic API key
 - `GOOGLE_API_KEY` - Google AI API key
 - `AI_API_KEY` - API key for the AI service (optional)
+- `OLLAMA_API_URL` - URL for Ollama API (default: http://ollama:11434)
 
 ## Supported Models
 
@@ -99,6 +100,9 @@ Once running, access the API documentation at:
 ### Google
 - gemini-pro
 - gemini-pro-vision
+
+### Deepseek (Local via Ollama)
+- deepseek-coder:6.7b
 
 ## Development Commands
 
