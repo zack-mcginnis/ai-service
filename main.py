@@ -35,33 +35,25 @@ def read_example(example_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Example not found")
     return example
 
-@app.get("/ai/generate", response_model=AIResponse)
-async def generate_ai_response(request: AIRequest):
-    """
-    Generate AI response using specified provider and model
-    """
-    try:
-        if request.config.provider == Provider.OPENAI:
-            output = await query_openai(
-                input_text=request.input,
-                model_name=request.config.ai_model
-            )
-        elif request.config.provider == Provider.ANTHROPIC:
-            output = await query_anthropic(
-                input_text=request.input,
-                model_name=request.config.ai_model
-            )
-        elif request.config.provider == Provider.GEMINI:
-            output = await query_gemini(
-                input_text=request.input,
-                model_name=request.config.ai_model
-            )
-        else:
-            raise HTTPException(status_code=400, detail="Unsupported provider")
-            
-        return AIResponse(output=output)
+@app.get("/ai/generate")
+async def generate(
+    input: str,
+    provider: str,
+    ai_model: str
+):
+    supported_providers = ["openai", "anthropic", "gemini"]
+    if provider not in supported_providers:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid provider. Supported providers are: {', '.join(supported_providers)}"
+        )
         
-    except HTTPException as e:
-        raise e
+    try:
+        if provider == "openai":
+            return {"output": await query_openai(input, ai_model)}
+        elif provider == "anthropic":
+            return {"output": await query_anthropic(input, ai_model)}
+        elif provider == "gemini":
+            return {"output": await query_gemini(input, ai_model)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) 

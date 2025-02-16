@@ -10,9 +10,9 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - PYTHONPATH=/app
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     volumes:
       - .:/app
       # Create a volume for pip cache to speed up reinstalls
@@ -32,7 +32,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: pg_isready -U postgres
       interval: 5s
       timeout: 5s
       retries: 5

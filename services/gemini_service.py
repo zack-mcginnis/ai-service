@@ -10,12 +10,8 @@ async def query_gemini(input_text: str, model_name: str) -> str:
     genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
     
     try:
-        # Run in threadpool since Gemini's Python client is synchronous
         model = genai.GenerativeModel(model_name)
-        response = await asyncio.to_thread(
-            model.generate_content,
-            input_text
-        )
+        response = await model.generate_content(input_text)
         return response.text
         
     except Exception as e:

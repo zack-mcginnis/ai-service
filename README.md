@@ -148,3 +148,60 @@ docker-compose exec api alembic upgrade head
 # Rollback last migration
 docker-compose exec api alembic downgrade -1
 ```
+
+## Testing
+
+The project includes tests for all endpoints and AI services. Tests use mocking to avoid making actual API calls.
+
+### Running Tests
+
+1. Set up test database and run all tests:
+```bash
+docker-compose exec api bash -c "chmod +x scripts/setup_test_db.sh && ./scripts/setup_test_db.sh && pytest"
+```
+
+2. Run specific test file (after setup):
+```bash
+docker-compose exec api bash -c "./scripts/setup_test_db.sh && pytest tests/test_endpoints.py"
+docker-compose exec api bash -c "./scripts/setup_test_db.sh && pytest tests/test_ai_services.py"
+docker-compose exec api bash -c "./scripts/setup_test_db.sh && pytest tests/test_ai_endpoint.py"
+```
+
+3. Run tests with detailed output:
+```bash
+docker-compose exec api pytest -v
+```
+
+4. Run tests with print output:
+```bash
+docker-compose exec api pytest -s
+```
+
+### Test Structure
+
+- `tests/test_endpoints.py` - Tests for basic CRUD endpoints
+- `tests/test_ai_services.py` - Tests for AI service integrations (mocked)
+- `tests/test_ai_endpoint.py` - Tests for AI generation endpoint (mocked)
+
+### Mocking Strategy
+
+The tests use `unittest.mock` and `pytest-mock` to:
+- Mock API client instances
+- Mock API responses
+- Verify correct API calls
+- Test error handling
+
+No actual API calls are made during testing, making the tests:
+- Fast
+- Reliable
+- Independent of API availability
+- Free of API usage costs
+
+### Environment Variables for Testing
+
+Tests require the following environment variables:
+- `OPENAI_API_KEY` - For OpenAI tests
+- `ANTHROPIC_API_KEY` - For Anthropic tests
+- `GOOGLE_API_KEY` - For Gemini tests
+
+Tests will be skipped if the corresponding API key is not set.
