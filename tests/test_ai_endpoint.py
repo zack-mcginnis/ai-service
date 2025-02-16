@@ -85,7 +85,7 @@ def test_ai_generate_deepseek(mock_client):
         params={
             "input": "Say 'Hello, Test!'",
             "provider": "deepseek",
-            "ai_model": "deepseek-coder:6.7b"
+            "ai_model": "deepseek-r1:1.5b"
         }
     )
     assert response.status_code == 200

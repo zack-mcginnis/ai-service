@@ -71,7 +71,7 @@ async def test_ollama_service(mock_client):
 
     response = await query_ollama(
         input_text="Say 'Hello, Test!'",
-        model_name="deepseek-coder:6.7b"
+        model_name="deepseek-r1:1.5b"
     )
     
     assert response == "Mocked Ollama response"

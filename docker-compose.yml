@@ -21,19 +21,21 @@ services:
       - pip_cache:/root/.cache/pip
     # Override the CMD to watch for requirement changes
     command: >
-      sh -c "chmod +x scripts/init_ollama.sh &&
+      sh -c "sleep 10 &&  # Give Ollama more time to start
+             chmod +x scripts/init_ollama.sh &&
              ./scripts/init_ollama.sh &&
              pip install -r requirements.txt &&
              python run.py"
 
   ollama:
     image: ollama/ollama:latest
+    mem_limit: 4g
     ports:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
-    entrypoint: ["/bin/ollama"]
-    command: serve
+    entrypoint: []  # Clear the default entrypoint
+    command: /usr/bin/ollama serve
 
   db:
     image: postgres:15

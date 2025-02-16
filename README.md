@@ -50,32 +50,21 @@ Once running, access the API documentation at:
 
 ## Available Endpoints
 
-### Examples API
-- `POST /examples/` - Create a new example
-  ```json
-  {
-    "name": "example name"
-  }
-  ```
-- `GET /examples/` - List all examples
-- `GET /examples/{example_id}` - Get specific example
-
 ### AI API
-- `GET /ai/generate` - Generate AI response
+- `GET /generate` - Generate AI response
   ```json
-  // Request
-  {
-    "input": "Your prompt text here",
-    "config": {
-      "provider": "openai",  // or "anthropic" or "gemini"
-      "ai_model": "gpt-3.5-turbo"  // model name for the selected provider
-    }
-  }
+  // Example Request
+  GET /generate?input=Your prompt text here&provider=deepseek&ai_model=deepseek-r1:1.5b
   
   // Response
   {
     "output": "AI generated response text"
   }
+  ```
+
+  ```bash
+  # Example curl command
+  curl "http://localhost:8000/generate?input=Write%20a%20hello%20world%20program&provider=deepseek&ai_model=deepseek-r1:1.5b"
   ```
 
 ## Environment Variables
@@ -102,7 +91,7 @@ Once running, access the API documentation at:
 - gemini-pro-vision
 
 ### Deepseek (Local via Ollama)
-- deepseek-coder:6.7b
+- deepseek-r1:1.5b
 
 ## Development Commands
 
