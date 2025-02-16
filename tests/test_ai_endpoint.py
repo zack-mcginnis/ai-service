@@ -6,11 +6,9 @@ import os
 
 client = TestClient(app)
 
+@patch.dict(os.environ, {'OPENAI_API_KEY': 'mock-openai-key'})
 @patch('services.openai_service.AsyncOpenAI')
 def test_ai_generate_openai(mock_openai):
-    if not os.getenv("OPENAI_API_KEY"):
-        pytest.skip("OPENAI_API_KEY not set")
-        
     # Setup mock
     mock_client = AsyncMock()
     mock_openai.return_value = mock_client
@@ -29,11 +27,9 @@ def test_ai_generate_openai(mock_openai):
     assert response.status_code == 200
     assert response.json()["output"] == "Mocked OpenAI response"
 
+@patch.dict(os.environ, {'ANTHROPIC_API_KEY': 'mock-anthropic-key'})
 @patch('services.anthropic_service.AsyncAnthropic')
 def test_ai_generate_anthropic(mock_anthropic):
-    if not os.getenv("ANTHROPIC_API_KEY"):
-        pytest.skip("ANTHROPIC_API_KEY not set")
-        
     # Setup mock
     mock_client = AsyncMock()
     mock_anthropic.return_value = mock_client
@@ -52,11 +48,9 @@ def test_ai_generate_anthropic(mock_anthropic):
     assert response.status_code == 200
     assert response.json()["output"] == "Mocked Anthropic response"
 
+@patch.dict(os.environ, {'GOOGLE_API_KEY': 'mock-google-key'})
 @patch('services.gemini_service.genai')
 def test_ai_generate_gemini(mock_genai):
-    if not os.getenv("GOOGLE_API_KEY"):
-        pytest.skip("GOOGLE_API_KEY not set")
-        
     # Setup mock
     mock_model = AsyncMock()
     mock_response = AsyncMock()
