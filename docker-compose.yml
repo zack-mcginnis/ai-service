@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   api:
-    build: .
+    build:
+      context: .
+      target: api
     ports:
       - "8000:8000"
     environment:
@@ -28,14 +30,13 @@ services:
              python run.py"
 
   ollama:
-    image: ollama/ollama:latest
-    mem_limit: 4g
+    build:
+      context: .
+      target: ollama
     ports:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
-    entrypoint: []  # Clear the default entrypoint
-    command: /usr/bin/ollama serve
 
   db:
     image: postgres:15

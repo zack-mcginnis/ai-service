@@ -1,4 +1,5 @@
-FROM python:3.11-slim
+# Stage 1: API Service
+FROM python:3.11-slim as api
 
 WORKDIR /app
 
@@ -16,4 +17,18 @@ COPY . .
 COPY ./scripts/start.sh /start.sh
 RUN chmod +x /start.sh
 
-CMD ["/start.sh"] 
+CMD ["/start.sh"]
+
+# Stage 2: Ollama Service
+FROM ollama/ollama:latest as ollama
+
+# Install necessary tools
+RUN apt-get update && \
+    apt-get install -y util-linux && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create a script to initialize swap and start Ollama
+COPY scripts/start-ollama.sh /start-ollama.sh
+RUN chmod +x /start-ollama.sh
+
+ENTRYPOINT ["/start-ollama.sh"] 
