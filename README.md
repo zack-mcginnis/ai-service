@@ -1,46 +1,73 @@
 # AI Service API
 
-A FastAPI-based Python service that interacts with AI models and returns data to clients.
+## Backend Services
 
-## Technology Stack
-
-- FastAPI (Web Framework)
-- SQLAlchemy (ORM)
-- PostgreSQL (Database)
-- Docker (Containerization)
-- Pydantic (Data Validation)
-- Uvicorn (ASGI Server)
-
-## Prerequisites
-
-- Docker
-- Docker Compose
-
-## Project Structure
-
-- `main.py` - FastAPI application and routes
-- `models.py` - SQLAlchemy models
-- `schemas.py` - Pydantic models for request/response
-- `database.py` - Database connection setup
-- `run.py` - Script to run the server
-- `docker-compose.yml` - Docker services configuration
-- `Dockerfile` - API service container configuration
-- `.env` - Environment variables
-
-## Getting Started
-
-Start the services:
+Start the backend services:
 ```bash
 docker-compose up --build
 ```
 
-This will:
-- Build and start the API container
-- Start the PostgreSQL database
-- Create necessary database tables
-- Enable hot-reload for development
-
 The API will be available at `http://localhost:8000`
+
+## Reference App Setup
+
+The reference app is a React application that demonstrates how to interact with the AI Service API.
+
+### Prerequisites
+- Node.js (v18 or later)
+- npm (comes with Node.js)
+
+### Setup Steps
+
+1. Navigate to the reference app directory:
+```bash
+cd reference-app
+```
+
+2. Install dependencies:
+```bash
+npm install
+npm install --save-dev @types/node  # Required for TypeScript type definitions
+```
+
+3. Create a .env file:
+```bash
+echo "REACT_APP_API_URL=http://localhost:8000" > .env
+```
+
+4. Start the development server:
+```bash
+npm start
+```
+
+The app will be available at `http://localhost:3000`
+
+### Development Notes
+
+- The reference app communicates with the API service running at `http://localhost:8000`
+- Make sure the backend services (docker-compose) are running before starting the reference app
+- The app supports hot reloading - changes to the code will automatically refresh the browser
+- Environment variables must start with `REACT_APP_` to be accessible in the React app
+
+### Available Features
+
+- Select AI provider and model from dropdown menus
+- Send prompts to the AI service
+- View conversation history
+- Error handling and loading states
+- Responsive design
+
+### Troubleshooting
+
+1. If you see CORS errors:
+   - Ensure the backend API is running
+   - Check that the REACT_APP_API_URL is correct in .env
+   - Verify the API's CORS settings allow requests from localhost:3000
+
+2. If the API is unreachable:
+   - Confirm the backend services are running (`docker ps`)
+   - Check the API logs (`docker-compose logs api`)
+   - Verify the port mappings in docker-compose.yml
 
 ## API Documentation
 

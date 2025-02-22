@@ -9,8 +9,8 @@ done
 echo "Pulling Deepseek model..."
 curl -X POST http://ollama:11434/api/pull \
      -H 'Content-Type: application/json' \
-     -d '{"model": "deepseek-r1:1.5b"}' \
-     -v
+     -d '{"name": "deepseek-r1:1.5b"}' \
+     --max-time 600  # Allow 10 minutes for model pull
 
 # Wait for model to be ready
 echo "Waiting for model to be ready..."

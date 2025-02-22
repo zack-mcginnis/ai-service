@@ -169,3 +169,44 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Virtual Environment
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node.js / React
+node_modules/
+/reference-app/node_modules
+/reference-app/build
+/reference-app/.env
+/reference-app/.env.local
+/reference-app/.env.development.local
+/reference-app/.env.test.local
+/reference-app/.env.production.local
+/reference-app/npm-debug.log*
+/reference-app/yarn-debug.log*
+/reference-app/yarn-error.log*
+
+# Database
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# React app environment
+/reference-app/.env
+/reference-app/.env.local
+/reference-app/.env.*.local
+!reference-app/.env.example
+
+# Docker
+.docker/
